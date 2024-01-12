@@ -11,7 +11,7 @@ aimg adraw wmfile scale off opai)
             (imgw (car (gimp-image-width img)))
             (imgh (car (gimp-image-height img)))
             ; Load watermark file & get resolution
-            (wmimage (car (gimp-file-load 1 wmfile wmfilename)))
+            (wmimage (car (gimp-file-load RUN-NONINTERACTIVE wmfile wmfilename)))
             (wmw (car (gimp-image-width wmimage)))
             (wmh (car (gimp-image-height wmimage)))
             ; Get drawable of watermark & copy to buffer
@@ -34,6 +34,8 @@ aimg adraw wmfile scale off opai)
         (gimp-layer-set-opacity wmlayer opai)
         ; Add watermark as a layer
         (gimp-floating-sel-to-layer wmlayer)
+        ; Set layer name
+        (gimp-item-set-name wmlayer "watermark")
         ; Flush display
         (gimp-displays-flush)
     )
