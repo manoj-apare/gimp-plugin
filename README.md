@@ -5,4 +5,4 @@ Plugin for adding gimp watermark.
 Add the scm plugin file to one of the gimp plugin folder. Gimp plugin folders can be found in `Settings > Folders > Plug-ins`.
 
 # Usage
-Plugin can be initiated from `Filters > Watermark > Add my watermark`.
+Plugin can be initiated from `Filters > Watermarks > Add my watermark`.
