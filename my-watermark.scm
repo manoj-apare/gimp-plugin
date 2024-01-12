@@ -1,5 +1,5 @@
 (define (my-watermark 
-aimg adraw wmfile opai off)
+aimg adraw wmfile scale off opai)
     (let*
         (
             ; Get filename
@@ -20,7 +20,7 @@ aimg adraw wmfile opai off)
             ; Paste watermark from buffer & get the watermark layer
             (wmlayer (car (gimp-edit-paste adraw TRUE)))
             ; Get scaled resolution for watermark
-            (rwmw (/ imgw 10))
+            (rwmw (/ imgw scale))
             (rwmh (/ (* rwmw wmh) wmw))
             ; Get offset margin for watermark
             (offx (- (- imgw rwmw) off))
@@ -47,11 +47,12 @@ aimg adraw wmfile opai off)
     "(c) GPL V3.0 or later"
     "Jan 2024"
     "RGB*"
-    SF-IMAGE       "Image"              0
-    SF-DRAWABLE    "Drawable"           0
-    SF-FILENAME    "Watermark image"    ""
-    SF-ADJUSTMENT  "Image opacity"      '(30 1 100 1 10 0 1)
-    SF-ADJUSTMENT  "Offset margin"      '(10 1 100 1 10 0 1)
+    SF-IMAGE       "Image"                     0
+    SF-DRAWABLE    "Drawable"                  0
+    SF-FILENAME    "Watermark image"           ""
+    SF-ADJUSTMENT  "Watermark scale factor"    '(10 1 100 1 10 0 1)
+    SF-ADJUSTMENT  "Offset margin"             '(10 1 100 1 10 0 1)
+    SF-ADJUSTMENT  "Image opacity"             '(30 1 100 1 10 0 1)
 )
 
 (script-fu-menu-register "my-watermark" "<Image>/Filters/Watermarks/")
