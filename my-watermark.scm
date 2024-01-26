@@ -23,8 +23,8 @@ aimg adraw wmfile scale off opai)
             (rwmw (/ imgw scale))
             (rwmh (/ (* rwmw wmh) wmw))
             ; Get offset margin for watermark
-            (offx (- (- imgw rwmw) off))
-            (offy (- (- imgh rwmh) off))
+            (offx (- (- imgw rwmw) (* off imgw)))
+            (offy (- (- imgh rwmh) (* off imgh)))
         )
         ; Scale the watermark
         (gimp-layer-scale wmlayer rwmw rwmh FALSE)
@@ -52,9 +52,9 @@ aimg adraw wmfile scale off opai)
     SF-IMAGE       "Image"                     0
     SF-DRAWABLE    "Drawable"                  0
     SF-FILENAME    "Watermark image"           ""
-    SF-ADJUSTMENT  "Watermark scale factor"    '(10 1 100 1 10 0 1)
-    SF-ADJUSTMENT  "Offset margin"             '(10 1 100 1 10 0 1)
-    SF-ADJUSTMENT  "Image opacity"             '(30 1 100 1 10 0 1)
+    SF-ADJUSTMENT  "Watermark scale factor (/)"    '(10 1 100 1 10 0 1)
+    SF-ADJUSTMENT  "Offset margin (%)"             '(0.005 0.000 0.100 0.001 0.005 3 1)
+    SF-ADJUSTMENT  "Image opacity (%)"             '(30 1 100 1 10 0 1)
 )
 
 (script-fu-menu-register "my-watermark" "<Image>/Filters/Watermarks/")
