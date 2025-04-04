@@ -42,8 +42,8 @@ aimg adraw wmfile scale off opai)
 )
 
 (script-fu-register 
-    "my-watermark"
-    "Add my watermark"
+    "my-watermark" 
+    "My Watermark"
     "A simple script adds image watermark."
     "Manoj Kumar"
     "(c) GPL V3.0 or later"
