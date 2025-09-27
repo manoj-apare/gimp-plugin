@@ -67,7 +67,7 @@ def add_watermark(procedure, run_mode, image, drawables, config, data):
     if position is None:
         error = 'No position given'
         return procedure.new_return_values(Gimp.PDBStatusType.CALLING_ERROR, GLib.Error(error))
-
+    image.undo_group_start()
     # Create new layer for watermark and place it above the image.
     watermarkLayer = Gimp.file_load_layer(Gimp.RunMode.NONINTERACTIVE, image, file)
     image.insert_layer(watermarkLayer, None, -1)
@@ -106,6 +106,7 @@ def add_watermark(procedure, run_mode, image, drawables, config, data):
     # Set X & Y offset margin.
     watermarkLayer.set_offsets(watermarkXOff, watermarkYOff)
 
+    image.undo_group_end()
     Gimp.displays_flush()
 
     Gimp.context_pop()
