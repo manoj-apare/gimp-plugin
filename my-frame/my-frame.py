@@ -43,57 +43,28 @@ def add_frame(procedure, run_mode, image, drawables, config, data):
             return procedure.new_return_values(Gimp.PDBStatusType.CANCEL, GLib.Error())
         else:
             dialog.destroy()
-    opacity = config.get_property('opacity')
 
-    if opacity is None:
-        error = 'No opacity given'
-        return procedure.new_return_values(Gimp.PDBStatusType.CALLING_ERROR, GLib.Error(error))
-    
     image.undo_group_start()
-    
-    # 1. Find image resolution
+
+    # Calculate border thickness as 0.0125 of image size
     imageWidth = image.get_width()
     imageHeight = image.get_height()
+    border_thickness = int(max(imageWidth, imageHeight) * 0.0125)
     
-    # 2. Find smallest side and calculate border thickness (0.05%)
-    small_side = min(imageWidth, imageHeight)
-    border_thickness = int(0.05 * small_side)
-
-    # 3. Resize image canvas to add border space
-    borderWidth = imageWidth + 2*border_thickness
-    borderHeight = imageHeight + 2*border_thickness
-    image.resize(borderWidth, borderHeight, border_thickness, border_thickness)
+    # Resize image to accommodate border
+    newWidth = imageWidth + (2 * border_thickness)
+    newHeight = imageHeight + (2 * border_thickness)
+    image.resize(newWidth, newHeight, border_thickness, border_thickness)
     
-    # 4. Get total layers and calculate positions
-    total_layers = len(image.get_layers())
-    
-    # 5. Add white border layer (in middle)
-    border_layer = Gimp.Layer.new(image, "Border",
-                                 borderWidth,
-                                 borderHeight,
+    # Add white border layer
+    border_layer = Gimp.Layer.new(image, "White Border",
+                                 newWidth, newHeight,
                                  Gimp.ImageType.RGB_IMAGE,
-                                 100,
-                                 Gimp.LayerMode.NORMAL)
-    
+                                 100, Gimp.LayerMode.NORMAL)
+
+    total_layers = len(image.get_layers())
     image.insert_layer(border_layer, None, total_layers)
     border_layer.fill(Gimp.FillType.WHITE)
-    
-    # 6. Copy the image layer
-    duplicate_layer = drawables[0].copy()
-    image.insert_layer(duplicate_layer, None, total_layers + 1)
-    
-    # 7. Scale the duplicate layer up by 20%
-    new_width = int(imageWidth * 1.2)
-    new_height = int(imageHeight * 1.2)
-    duplicate_layer.scale(new_width, new_height, False)
-    
-    # 8. Center the scaled duplicate layer
-    offset_x = (borderWidth - new_width) // 2
-    offset_y = (borderHeight - new_height) // 2
-    duplicate_layer.set_offsets(offset_x, offset_y)
-    
-    # 9. Set border layer opacity
-    border_layer.set_opacity(opacity)
 
     image.undo_group_end()
     Gimp.displays_flush()
@@ -116,10 +87,8 @@ class MyFramePlugin (Gimp.PlugIn):
         procedure.set_documentation ("My Frame ", "My Frame ", name)
         procedure.set_menu_label("My Frame")
         procedure.set_attribution("Manoj Kumar", "Manoj Kumar", "2025")
-        # Top level menu "Test"
+        # Top level menu "Frames"
         procedure.add_menu_path ("<Image>/Filters/Frames/")
-        # # Get frame opacity (default 60).
-        procedure.add_int_argument ("opacity", "_Opacity", "Opacity", 1, 100, 60, GObject.ParamFlags.READWRITE)
 
         return procedure
 
